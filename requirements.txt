@@ -1,8 +1,0 @@
-streamlit
-groq
-pymupdf
-pandas
-openpyxl
-arabic-reshaper
-python-bidi
-plotly
