@@ -1,11 +1,21 @@
+import os
+import fitz  # PyMuPDF
+import pandas as pd
 from flask import Flask, render_template, request, jsonify
 from groq import Groq
-import os
+from arabic_reshaper import reshape
+from bidi.algorithm import get_display
 
 app = Flask(__name__)
 
-# استدعاء المفتاح من البيئة (أو وضعه مباشرة مؤقتاً)
-client = Groq(api_key="ضع_مفتاحك_هنا")
+# مفتاحك الذي وضعته في الكود
+client = Groq(api_key="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")
+
+def fix_ar(text):
+    try:
+        return get_display(reshape(str(text)))
+    except:
+        return text
 
 @app.route('/')
 def index():
@@ -13,27 +23,33 @@ def index():
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    data = request.json
-    goal = data.get('goal')
-    audience = data.get('audience')
+    if 'file' not in request.files:
+        return jsonify({'error': 'لم يتم رفع ملف'})
     
-    # بناء البرومبت الاحترافي
-    prompt = f"أنت مستشار استراتيجي. الهدف: {goal}. الجمهور: {audience}. حلل المعطيات وقدم تقريراً باللغة العربية الفصحى بتنسيق HTML (استخدم <h3> للعنوان و <ul> للنقاط)."
+    file = request.files['file']
+    structure = request.form.get('structure', 'شامل')
     
-    try:
-        completion = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="llama-3.3-70b-versatile"
-        )
-        report = completion.choices[0].message.content
-        return jsonify({'success': True, 'report': report})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
+    # معالجة الملف (نفس منطقك الأصلي)
+    content_summary = ""
+    ext = file.filename.split('.')[-1].lower()
+    
+    if ext == 'pdf':
+        doc = fitz.open(stream=file.read(), filetype="pdf")
+        text = " ".join([page.get_text() for page in doc])
+        content_summary = text[:3000]
+    elif ext in ['csv', 'xlsx']:
+        df = pd.read_csv(file) if ext == 'csv' else pd.read_excel(file)
+        content_summary = df.describe().to_string()
+
+    # طلب التحليل من Groq
+    sys_prompt = f"أنت محلل خبير. التقرير مطلوب بهيكل {structure}. اللغة: العربية."
+    completion = client.chat.completions.create(
+        messages=[{"role": "system", "content": sys_prompt},
+                  {"role": "user", "content": f"حلل: {content_summary}"}],
+        model="llama-3.3-70b-versatile"
+    )
+    report = completion.choices[0].message.content
+    return jsonify({'report': report})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-    # أضف هذا السطر بعد تعريف app = Flask(__name__)
-app = Flask(__name__)
-app.debug = True
-# هذا السطر مهم جداً لـ Vercel
-app = app
+    app.run()
