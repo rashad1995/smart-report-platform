@@ -1,8 +1,8 @@
+streamlit
 groq
 pymupdf
-streamlit
-plotly
 pandas
 openpyxl
 arabic-reshaper
 python-bidi
+plotly
