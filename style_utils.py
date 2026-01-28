@@ -4,51 +4,43 @@ from bidi.algorithm import get_display
 
 def fix_ar(text):
     if not text: return ""
-    # معالجة النصوص العربية لضمان عدم ظهور الحروف مقطعة
+    # تصحيح تشكيل الحروف العربية ثم عكس الاتجاه للعرض الصحيح
     return get_display(reshape(str(text)))
 
 def apply_custom_css():
     st.markdown("""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         
-        /* ضبط اتجاه التطبيق بالكامل من اليمين لليسار */
+        /* إجبار التطبيق بالكامل على اتجاه اليمين لليسار */
         html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"], .stMarkdown {
             direction: rtl !important;
             text-align: right !important;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Cairo', sans-serif !important;
         }
         
-        /* تنسيق كرت التقرير الاحترافي */
-        .report-container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 15px;
-            border-right: 10px solid #1e3a8a;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            margin: 20px 0;
-            line-height: 2;
-            color: #2c3e50;
+        /* تنسيق "كرت" التقرير الاستراتيجي */
+        .report-box {
+            background-color: #fcfcfc;
+            padding: 40px;
+            border-radius: 20px;
+            border-right: 15px solid #003366;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            margin: 25px 0;
+            line-height: 2.2;
+            color: #1a1a1a;
+            white-space: pre-wrap; /* للحفاظ على تنسيق الأسطر */
         }
-        
-        /* تنسيق أيقونة البوت */
-        .bot-bubble {
-            background: #f0f2f6;
+
+        /* تحسين مظهر التشات بوت */
+        .chat-container {
+            background: #e9ecef;
             padding: 20px;
             border-radius: 15px;
-            border: 1px solid #d1d9e6;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 15px;
-        }
-        
-        /* تحسين مظهر الأزرار */
-        .stButton>button {
-            width: 100%;
-            border-radius: 10px;
-            background-color: #1e3a8a;
-            color: white;
         }
         </style>
     """, unsafe_allow_html=True)
