@@ -1,33 +1,33 @@
 import streamlit as st
 from style_utils import fix_ar
 
-def run_interactive_bot():
+def run_survey_bot():
     if 'step' not in st.session_state: st.session_state.step = 0
     if 'user_prefs' not in st.session_state: st.session_state.user_prefs = {}
 
     st.markdown(f"""
-        <div class="bot-header">
-            <span style='font-size: 40px; margin-left: 15px;'>🤖</span>
+        <div class="bot-bubble">
+            <span style='font-size: 30px;'>🤖</span>
             <div>
-                <h3 style='margin:0;'>{fix_ar("المساعد الذكي")}</h3>
-                <p style='margin:0; color: #555;'>{fix_ar("أجب على الأسئلة لضبط معايير التقرير")}</p>
+                <strong>{fix_ar("المساعد الذكي:")}</strong><br>
+                {fix_ar("أهلاً بك! يرجى الإجابة على الأسئلة لتخصيص التقرير.")}
             </div>
         </div>
     """, unsafe_allow_html=True)
 
     if st.session_state.step == 0:
-        choice = st.radio(fix_ar("1. ما هي طبيعة الملف المرفوع؟"), 
-                         [fix_ar("بيانات مالية وأرقام"), fix_ar("نصوص وأبحاث نظرية"), fix_ar("خطة عمل استراتيجية")])
-        if st.button(fix_ar("التالي ⬅️")):
-            st.session_state.user_prefs['type'] = choice
+        q1 = st.radio(fix_ar("1. ما هو الغرض من هذا التحليل؟"), 
+                     [fix_ar("تقييم المخاطر"), fix_ar("فرص التطوير"), fix_ar("ملخص أكاديمي")])
+        if st.button(fix_ar("السؤال التالي ⬅️")):
+            st.session_state.user_prefs['goal'] = q1
             st.session_state.step = 1
             st.rerun()
 
     elif st.session_state.step == 1:
-        choice = st.radio(fix_ar("2. ما هو مستوى النقد المطلوب في التقرير؟"), 
-                         [fix_ar("إيجابي ومحفز"), fix_ar("نقد موضوعي صارم"), fix_ar("تحليل شامل (SWOT)")])
+        q2 = st.radio(fix_ar("2. من هو الجمهور المستهدف؟"), 
+                     [fix_ar("لجنة المناقشة"), fix_ar("إدارة عليا"), fix_ar("مختصون تقنيون")])
         if st.button(fix_ar("توليد التقرير النهائي 🚀")):
-            st.session_state.user_prefs['mood'] = choice
+            st.session_state.user_prefs['audience'] = q2
             st.session_state.step = 2
             st.rerun()
     
