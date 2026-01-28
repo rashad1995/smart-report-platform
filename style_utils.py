@@ -4,45 +4,51 @@ from bidi.algorithm import get_display
 
 def fix_ar(text):
     if not text: return ""
-    # هذه الخطوة تعالج الحروف المقطعة والمقلوبة في الرسوم والعناوين
-    reshaped_text = reshape(str(text))
-    return get_display(reshaped_text)
+    # معالجة النصوص العربية لضمان عدم ظهور الحروف مقطعة
+    return get_display(reshape(str(text)))
 
 def apply_custom_css():
-    # حقن CSS عالمي لإجبار الصفحة كاملة على اتجاه اليمين
     st.markdown("""
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         
-        /* إجبار الاتجاه من اليمين لليسار لكل عناصر التطبيق */
+        /* ضبط اتجاه التطبيق بالكامل من اليمين لليسار */
         html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"], .stMarkdown {
             direction: rtl !important;
             text-align: right !important;
             font-family: 'Cairo', sans-serif;
         }
-
-        /* تعديل اتجاه النصوص داخل الصناديق والمدخلات */
-        div[data-baseweb="select"], .stTextInput, .stTextArea, .stSelectbox {
-            direction: rtl !important;
-            text-align: right !important;
-        }
-
-        /* تنسيق التقرير ليظهر كوثيقة رسمية عربية */
+        
+        /* تنسيق كرت التقرير الاحترافي */
         .report-container {
-            direction: rtl !important;
-            text-align: right !important;
             background-color: #ffffff;
-            padding: 35px;
+            padding: 30px;
             border-radius: 15px;
-            border-right: 12px solid #1e3a8a; /* الخط الأزرق على اليمين */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-right: 10px solid #1e3a8a;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin: 20px 0;
             line-height: 2;
+            color: #2c3e50;
         }
-
-        /* قلب اتجاه الأعمدة (Columns) */
-        [data-testid="column"] {
-            direction: rtl !important;
-            text-align: right !important;
+        
+        /* تنسيق أيقونة البوت */
+        .bot-bubble {
+            background: #f0f2f6;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #d1d9e6;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* تحسين مظهر الأزرار */
+        .stButton>button {
+            width: 100%;
+            border-radius: 10px;
+            background-color: #1e3a8a;
+            color: white;
         }
         </style>
-        """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
