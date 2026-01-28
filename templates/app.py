@@ -32,3 +32,8 @@ def analyze():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+    # أضف هذا السطر بعد تعريف app = Flask(__name__)
+app = Flask(__name__)
+app.debug = True
+# هذا السطر مهم جداً لـ Vercel
+app = app
